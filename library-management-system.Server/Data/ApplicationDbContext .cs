@@ -12,7 +12,7 @@ namespace library_management_system.Server.Data
         // so it calls the constructor of the DbContext base class, and pass the options object to it.
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        // DbSet for book entity. it represent a collection of entities of type T that you can query from or save to the database.
+        // DbSet represents a table in the database.
         // so this lets us access and manage all Book records in database.
         public DbSet<Book> Books { get; set; }
     }
