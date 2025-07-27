@@ -8,9 +8,6 @@ using library_management_system.Server.Data;
 
 namespace library_management_system.Server.Migrations
 {
-    // this file is also a model snapshot
-    // represents the current state of your database schema as understood by Entity Framework Core after the latest migration
-    // it is a reference for EF Core to compare your current model with the last applied migratio
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
@@ -25,15 +22,15 @@ namespace library_management_system.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("author")
+                    b.Property<string>("Author")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("description")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("title")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

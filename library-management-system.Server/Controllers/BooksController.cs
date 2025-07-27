@@ -68,9 +68,9 @@ namespace library_management_system.Server.Controllers
                 return NotFound();
             }
 
-            bookEntity.title = book.title;
-            bookEntity.author = book.author;
-            bookEntity.description = book.description;
+            bookEntity.Title = book.Title;
+            bookEntity.Author = book.Author;
+            bookEntity.Description = book.Description;
 
             _context.Entry(bookEntity).State = EntityState.Modified; // what is State and EntityState.Modified
 
@@ -104,7 +104,7 @@ namespace library_management_system.Server.Controllers
             await _context.SaveChangesAsync(); // SaveChangesAsync() commits changes to the database
 
             return CreatedAtAction("GetBook", new { id = book.Id }, book);
-            // CreatedAtAction is a helper method that returns a 201 Created HTTP response.
+            // CreatedAtAction is a helper method that returns a 201 Created HTTP response
             // It also includes a Location header pointing to the URL of the newly created resource
             // "GetBook" is to the name of the action method in the controller that retrieves a book by its ID
         }
