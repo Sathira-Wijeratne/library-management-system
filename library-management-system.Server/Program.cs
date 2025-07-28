@@ -7,8 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // registers DbContext with the dependency injection system and configures it to use SQLite database file named books.db
-// options are specified instructing to connect to SQLite
-// UseSqlite expects a connection string which is provided
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=books.db"));
 
 builder.Services.AddControllers();
