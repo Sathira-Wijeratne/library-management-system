@@ -1,25 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using library_management_system.Server.Data;
 using library_management_system.Server.Data.Entities;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace library_management_system.Server.Controllers
 {
-    // route definition - api/Books
-    [Route("api/[controller]")] 
-    [ApiController] // instructs the application that this class is supposed to handle HTTP requests
-    public class BooksController : ControllerBase // inherit from ControllerBase. gives access to specific methods and functionality needed for API.
+    /// <summary>
+    /// Controller for managing books.
+    /// Provides endpoints for creating, reading, updating, and deleting books.
+    /// </summary>
+    /// <remarks>
+    /// Route : api/Books
+    /// </remarks>
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BooksController : ControllerBase
     {
-        private readonly ApplicationDbContext _context; // readonly field can only be assigned a value once, either when declared or in the constructor
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<BooksController> _logger;
 
-        // inject DbContext
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BooksController"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
+        /// <param name="logger">The logger.</param>
         public BooksController(ApplicationDbContext context, ILogger<BooksController> logger)
         {
             _context = context;
@@ -27,58 +32,101 @@ namespace library_management_system.Server.Controllers
         }
 
         // endpoints
-        // GET: api/Books
+
+        /// <summary>
+        /// Retrieves all books.
+        /// </summary>
+        /// <returns>A list of books.</returns>
         [HttpGet]
-        // IEnumerable<T> is an interface representing a collection of T objects that can be iterated over (like a list or array). It's used for  used for returning collections
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Book>))]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
-            // ToListAsync() is an Entity Framework Core method that asynchronously executes the database query and returns the results as a List
-            return await _context.Books.ToListAsync();
+            try
+            {
+                return await _context.Books.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when fetching all books");
+                return StatusCode(500, "An unexpected error occurred when fetching books information");
+            }
         }
 
-        // GET: api/Books/5
+        /// <summary>
+        /// Retrieves a book by its ID.
+        /// </summary>
+        /// <param name="id">Unique value to identify book</param>
+        /// <returns>A book if found, 404 if not found, 500 if an error occurs</returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(Book))]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-
-            if (book == null)
+            try
             {
-                return NotFound(); // return 404
-            }
+                var book = await _context.Books.FindAsync(id);
 
-            return book;
+                if (book == null)
+                {
+                    return NotFound();
+                }
+
+                return book;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when fetching book with id: {BookId}", id);
+                return StatusCode(500, "An unexpected error occured when fetching book information");
+            }
         }
 
-        // PUT: api/Books/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updates a book by its ID.
+        /// </summary>
+        /// <param name="id">Unique value to identify book</param>
+        /// <param name="book">The book object containing updated information</param>
+        /// <returns>No content if successful, 400 if ID doesn't match, 404 if book not found, 500 if an error occurs</returns>
         [HttpPut("{id}")]
-        //IActionResult allows to return different types of HTTP responses, used when only HTTP status codes are returned
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> PutBook(int id, Book book)
         {
-            if (id != book.Id)
-            {
-                return BadRequest(); // return 400
-            }
+            Book bookEntity;
 
-            var bookEntity = await _context.Books.FindAsync(id);
+            try
+            {
+            // fetch book details
+                bookEntity = await _context.Books.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when retrieving book with id: {BookId} for update", id);
+                return StatusCode(500, "An unexpected error occurred.");
+            }
 
             if (bookEntity == null)
             {
                 return NotFound();
             }
 
+            // update book with new values
             bookEntity.Title = book.Title;
             bookEntity.Author = book.Author;
             bookEntity.Description = book.Description;
 
-            _context.Entry(bookEntity).State = EntityState.Modified; // what is State and EntityState.Modified
+            // mark the entity as modified
+            _context.Entry(bookEntity).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException ex) // Exception when another user has updated or deleted the same entity in the database since it was loaded
+            catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex, "There was a concurrency conflict when updating Book with id: {BookId}", id);
                 return Conflict("Update could not be done due to concurrency conflict");
@@ -92,25 +140,38 @@ namespace library_management_system.Server.Controllers
             return NoContent();
         }
 
-        // POST: api/Books
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Creates a new book.
+        /// </summary>
+        /// <param name="book">The book object to be created</param>
+        /// <returns> 201 if created with the new book and location header for newly created book, 500 if an error occurs</returns>
         [HttpPost]
-        // Task<T>: Represents an asynchronous operation that will return a value of type T. 
-        // In this context, it means the method is asynchronous and can be awaited.
-        // ActionResult is the result of an action method, it provides a flexible way to return either the actual data on success, or an HTTP status code with an optional message
+        [ProducesResponseType(201, Type = typeof(Book))]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<Book>> PostBook(Book book)
         {
-            _context.Books.Add(book); // stages the book object to be inserted
-            await _context.SaveChangesAsync(); // SaveChangesAsync() commits changes to the database
+            try
+            {
+                _context.Books.Add(book);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating book");
+                return StatusCode(500, "Unable to create book due to an unexpected error.");
+            }
 
             return CreatedAtAction("GetBook", new { id = book.Id }, book);
-            // CreatedAtAction is a helper method that returns a 201 Created HTTP response
-            // It also includes a Location header pointing to the URL of the newly created resource
-            // "GetBook" is to the name of the action method in the controller that retrieves a book by its ID
         }
 
-        // DELETE: api/Books/5
+        /// <summary>
+        /// Deletes a book by its ID.
+        /// </summary>
+        /// <param name="id">Unique value to identify book</param>
+        /// <returns>No content if successful, 404 if book not found, 500 if an error occurs</returns>
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> DeleteBook(int id)
         {
             var book = await _context.Books.FindAsync(id);
@@ -119,10 +180,26 @@ namespace library_management_system.Server.Controllers
                 return NotFound();
             }
 
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting book with id: {BookId}", id);
+                return StatusCode(500, "Unable to delete book due to an unexpected error.");
+            }
 
             return NoContent();
         }
+
+        // helper methods
+
+        // public bool IsBookValid(Book book)
+        // {
+
+        //     return true;
+        // }
     }
 }
