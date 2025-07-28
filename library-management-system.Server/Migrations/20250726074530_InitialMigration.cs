@@ -4,7 +4,6 @@
 
 namespace library_management_system.Server.Migrations
 {
-    // this migration was automatically created using dotnet-ef a command-line tool for Entity Framework Core
     /// <inheritdoc />
     /// 
     public partial class InitialMigration : Migration
