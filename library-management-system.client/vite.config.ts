@@ -47,8 +47,8 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target,
+            '/api': {
+                target : 'http://localhost:5101',
                 secure: false
             }
         },
