@@ -1,13 +1,14 @@
 import {useState, useEffect} from 'react';
 import type { Book } from '../types/Book';
 import AddBookForm from '../components/AddBookForm';
+import EditBookForm from '../components/EditBookForm';
 
 export default function Home() {
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [showForm, setShowForm] = useState<boolean>(false);
-    const [addingBook, setAddingBook] = useState<Book | null>(null);
+    const [showAddForm, setAddShowForm] = useState<boolean>(false);
+    const [showEditForm, setEditShowForm] = useState<boolean>(false);
     const [editingBook, setEditingBook] = useState<Book | null>(null);
 
     useEffect(()=>{
@@ -39,26 +40,31 @@ export default function Home() {
 
     // functions
     const handleAddBook = () => {
-        setShowForm(true);
+        setAddShowForm(true);
         
     }
 
     const handleAddBookCancel = () => {
-        setShowForm(false);
+        setAddShowForm(false);
     }
 
     const handleAddBookSuccess = (newBook: Book) => {
         setBooks(prevBooks => [...prevBooks, newBook]);
-        setShowForm(false);
+        setAddShowForm(false);
     }
 
     const handleEditBook =(book : Book) => {
         setEditingBook(book);
-        setShowForm(true);
+        setEditShowForm(true);
     }
 
     const handleEditBookCancel = () => {
-        setShowForm(false);
+        setEditShowForm(false);
+    }
+
+    const handleEditBookSuccess = (updatedBook: Book) => {
+        setBooks(prevBooks => prevBooks.map(book =>book.id === updatedBook.id ? updatedBook : book));
+        setEditShowForm(false);
     }
 
     const handleDeleteBook = async (bookId: number) => {
@@ -133,7 +139,8 @@ export default function Home() {
                 </tbody>
             </table>
 
-            {showForm && <AddBookForm onCancel={handleAddBookCancel} onSuccess={handleAddBookSuccess} />}
+            {showAddForm && <AddBookForm onCancel={handleAddBookCancel} onSuccess={handleAddBookSuccess} />}
+            {showEditForm && editingBook && (<EditBookForm book ={editingBook} onCancel={handleEditBookCancel} onSuccess={handleEditBookSuccess} />)}
         </div>
     );
 }
