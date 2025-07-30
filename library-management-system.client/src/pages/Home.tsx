@@ -195,7 +195,7 @@ export default function Home() {
                         component={Paper}
                         elevation={3}
                         sx={{
-                            maxHeight: 400,
+                            maxHeight: 525,
                             overflow: 'auto',
                         }}
                     >
