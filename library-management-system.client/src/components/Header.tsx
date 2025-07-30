@@ -1,7 +1,20 @@
+import { AppBar, Toolbar, Typography } from '@mui/material';
+
 export default function Header(){
+    // what does following do : position, boxshadox, Toolbar, component, flexgrow
     return (
-        <div>
-            <h1>Library Management System</h1>
-        </div>
+        <AppBar position="static">
+            <Toolbar>
+                <Typography 
+                    variant="h4" 
+                    sx={{ 
+                        flexGrow: 1,
+                        fontWeight: 600,
+                    }}
+                >
+                    Library Management System
+                </Typography>
+            </Toolbar>
+        </AppBar>
     );
 }

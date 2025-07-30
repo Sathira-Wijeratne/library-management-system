@@ -64,11 +64,16 @@ export default function EditBookForm({ book, onCancel, onSuccess }: EditBookForm
 
     return (
         <>
-            <DialogTitle>Edit Book</DialogTitle>
+            <DialogTitle sx={{ 
+                fontWeight: 600,
+                mb: 2
+            }}>
+                Edit Book
+            </DialogTitle>
             <form onSubmit={handleSubmit}>
                 <DialogContent>
                     {error && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
+                        <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
                             {error}
                         </Alert>
                     )}
@@ -101,11 +106,18 @@ export default function EditBookForm({ book, onCancel, onSuccess }: EditBookForm
                         />
                     </Box>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={onCancelClick} disabled={loading}>
+                <DialogActions sx={{ p: 2}}>
+                    <Button 
+                        onClick={onCancelClick} 
+                        disabled={loading}
+                    >
                         Cancel
                     </Button>
-                    <Button type="submit" variant="contained" disabled={loading}>
+                    <Button 
+                        type="submit" 
+                        variant="contained" 
+                        disabled={loading}
+                    >
                         {loading ? 'Editing...' : 'Update'}
                     </Button>
                 </DialogActions>

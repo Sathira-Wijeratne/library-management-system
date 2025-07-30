@@ -120,184 +120,242 @@ export default function Home() {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3 }}>
-                <Button
-                    variant="contained"
-                    startIcon={<Add />}
-                    onClick={handleAddBook}
-                    sx={{ minWidth: isMobile ? 'auto' : 'fit-content' }}
-                >
-                    {'Add Book'}
-                </Button>
-            </Box>
-
-            {/* Mobile view */}
-            {isMobile ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {books.length === 0 ? (
-                        <Alert severity="info">No books found</Alert>
-                    ) : (
-                        books.map((book) => (
-                            <Card key={book.id}>
-                                <CardContent>
-                                    <Typography variant="h6" gutterBottom sx={{wordBreak: 'break-all'}}>
-                                        {book.title}
-                                    </Typography>
-                                    <Typography color="text.secondary" gutterBottom sx={{wordBreak: 'break-all'}}>
-                                        {book.author}
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ mb: 2, wordBreak: 'break-all'}}>
-                                        {book.description}
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                                        <Button
-                                            variant='contained'
-                                            startIcon={<Edit/>}
-                                            color="primary"
-                                            size='small'
-                                            onClick={() => handleEditBook(book)}
-                                        >
-                                            Edit
-                                        </Button>
-                                        <Button
-                                            variant='contained'
-                                            startIcon={<Delete/>}
-                                            color="error"
-                                            size="small"
-                                            onClick={() => handleDeleteBook(book)}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        ))
-                    )}
+        <Box sx={{ 
+            // minHeight: '100vh',
+            backgroundColor: '#f5f5f5',
+        }}>
+            <Container maxWidth="lg" sx={{ pt: 4, pb: 4 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3 }}>
+                    <Button
+                        variant="contained"
+                        startIcon={<Add />}
+                        onClick={handleAddBook}
+                        sx={{ 
+                            minWidth: isMobile ? 'auto' : 'fit-content',
+                            borderRadius: 2,
+                            textTransform: 'none',
+                            fontWeight: 600
+                        }}
+                    >
+                        {'Add Book'}
+                    </Button>
                 </Box>
-            ) : (
-                /* Desktop Table View */
-                <TableContainer
-                    component={Paper}
-                    elevation={2}
-                    sx={{
-                        maxHeight: 400, 
-                        overflow: 'auto'
-                    }}
-                >
-                    <Table stickyHeader sx={{ tableLayout: 'fixed', width: '100%' }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ width: '80px', minWidth: '80px' }}>ID</TableCell>
-                                <TableCell sx={{ width: '200px', minWidth: '200px' }}>Title</TableCell>
-                                <TableCell sx={{ width: '150px', minWidth: '150px' }}>Author</TableCell>
-                                <TableCell sx={{ width: 'auto', minWidth: '250px' }}>Description</TableCell>
-                                <TableCell sx={{ width: '120px', minWidth: '120px' }}></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {books.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} align="center">
-                                        <Typography color="text.secondary">
-                                            No books found
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                books.map((book) => (
-                                    <TableRow key={book.id} hover>
-                                        <TableCell sx={{ 
-                                            wordWrap: 'break-word',
-                                            maxHeight: '100px',
-                                            overflow: 'hidden'
-                                        }}>
-                                            {book.id}
-                                        </TableCell>
-                                        <TableCell sx={{ 
-                                            wordWrap: 'break-word',
-                                            whiteSpace: 'normal',
-                                            maxHeight: '100px',
-                                            overflow: 'auto'
-                                        }}>
+
+                {/* Mobile view */}
+                {isMobile ? (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        {books.length === 0 ? (
+                            <Alert severity="info">No books found</Alert>
+                        ) : (
+                            books.map((book) => (
+                                <Card key={book.id}>
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom sx={{wordBreak: 'break-all'}}>
                                             {book.title}
-                                        </TableCell>
-                                        <TableCell sx={{ 
-                                            wordWrap: 'break-word',
-                                            whiteSpace: 'normal',
-                                            maxHeight: '100px',
-                                            overflow: 'auto'
-                                        }}>
+                                        </Typography>
+                                        <Typography color="text.secondary" gutterBottom sx={{wordBreak: 'break-all'}}>
                                             {book.author}
-                                        </TableCell>
-                                        <TableCell sx={{ 
-                                            wordWrap: 'break-word',
-                                            whiteSpace: 'normal',
-                                            maxHeight: '100px',
-                                            overflow: 'auto',
-                                            lineHeight: 1.4
-                                        }}>
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ mb: 2, wordBreak: 'break-all'}}>
                                             {book.description}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                                                <IconButton
-                                                    color="primary"
-                                                    onClick={() => handleEditBook(book)}
-                                                >
-                                                    <Edit />
-                                                </IconButton>
-                                                <IconButton
-                                                    color="error"
-                                                    onClick={() => handleDeleteBook(book)}
-                                                >
-                                                    <Delete />
-                                                </IconButton>
-                                            </Box>
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                                            <Button
+                                                variant='contained'
+                                                startIcon={<Edit/>}
+                                                color="primary"
+                                                size='small'
+                                                onClick={() => handleEditBook(book)}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant='contained'
+                                                startIcon={<Delete/>}
+                                                color="error"
+                                                size="small"
+                                                onClick={() => handleDeleteBook(book)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        )}
+                    </Box>
+                ) : (
+                    /* Desktop Table View */
+                    <TableContainer
+                        component={Paper}
+                        elevation={3}
+                        sx={{
+                            maxHeight: 400, 
+                            overflow: 'auto',
+                        }}
+                    >
+                        <Table stickyHeader sx={{ tableLayout: 'fixed', width: '100%' }}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ 
+                                        width: '80px', 
+                                        minWidth: '80px',
+                                        backgroundColor: '#f8f9fa',
+                                        fontWeight: 600,
+                                        borderRight: '1px solid #e0e0e0'
+                                    }}>ID</TableCell>
+                                    <TableCell sx={{ 
+                                        width: '200px', 
+                                        minWidth: '200px',
+                                        backgroundColor: '#f8f9fa',
+                                        fontWeight: 600,
+                                        borderRight: '1px solid #e0e0e0'
+                                    }}>Title</TableCell>
+                                    <TableCell sx={{ 
+                                        width: '150px', 
+                                        minWidth: '150px',
+                                        backgroundColor: '#f8f9fa',
+                                        fontWeight: 600,
+                                        borderRight: '1px solid #e0e0e0'
+                                    }}>Author</TableCell>
+                                    <TableCell sx={{ 
+                                        width: 'auto', 
+                                        minWidth: '250px',
+                                        backgroundColor: '#f8f9fa',
+                                        fontWeight: 600,
+                                        borderRight: '1px solid #e0e0e0'
+                                    }}>Description</TableCell>
+                                    <TableCell sx={{ 
+                                        width: '120px', 
+                                        minWidth: '120px',
+                                        backgroundColor: '#f8f9fa',
+                                        fontWeight: 600
+                                    }}>Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {books.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                                            <Typography color="text.secondary">
+                                                No books found
+                                            </Typography>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
-
-            {/* Dialogs */}
-            {/* Add book dialog */}
-            <Dialog open={showAddForm} onClose={handleAddBookCancel} maxWidth="sm" fullWidth>
-                <AddBookForm onCancel={handleAddBookCancel} onSuccess={handleAddBookSuccess} />
-            </Dialog>
-
-            {/* Edit book dialog */}
-            <Dialog open={showEditForm} onClose={handleEditBookCancel} maxWidth="sm" fullWidth>
-                {editingBook && (
-                    <EditBookForm
-                        book={editingBook}
-                        onCancel={handleEditBookCancel}
-                        onSuccess={handleEditBookSuccess}
-                    />
+                                ) : (
+                                    books.map((book) => (
+                                        <TableRow key={book.id} hover>
+                                            <TableCell sx={{ 
+                                                wordWrap: 'break-word',
+                                                maxHeight: '100px',
+                                                overflow: 'hidden',
+                                                borderRight: '1px solid #e0e0e0'
+                                            }}>
+                                                {book.id}
+                                            </TableCell>
+                                            <TableCell sx={{ 
+                                                wordWrap: 'break-word',
+                                                whiteSpace: 'normal',
+                                                maxHeight: '100px',
+                                                overflow: 'auto',
+                                                borderRight: '1px solid #e0e0e0'
+                                            }}>
+                                                {book.title}
+                                            </TableCell>
+                                            <TableCell sx={{ 
+                                                wordWrap: 'break-word',
+                                                whiteSpace: 'normal',
+                                                maxHeight: '100px',
+                                                overflow: 'auto',
+                                                borderRight: '1px solid #e0e0e0'
+                                            }}>
+                                                {book.author}
+                                            </TableCell>
+                                            <TableCell sx={{ 
+                                                wordWrap: 'break-word',
+                                                whiteSpace: 'normal',
+                                                maxHeight: '100px',
+                                                overflow: 'auto',
+                                                lineHeight: 1.4,
+                                                borderRight: '1px solid #e0e0e0'
+                                            }}>
+                                                {book.description}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                                                    <IconButton
+                                                        color="primary"
+                                                        onClick={() => handleEditBook(book)}
+                                                    >
+                                                        <Edit />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        color="error"
+                                                        onClick={() => handleDeleteBook(book)}
+                                                    >
+                                                        <Delete />
+                                                    </IconButton>
+                                                </Box>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 )}
-            </Dialog>
 
-            {/* Delete confirmation dialog */}
-            <Dialog open={showDeleteDialog} onClose={handleDeleteBookCancel} maxWidth="xs" fullWidth>
-                <DialogTitle>Confirm Delete</DialogTitle>
-                <DialogContent>
-                    <Typography>
-                        Are you sure you want to delete "{bookToDelete?.title}"?
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDeleteBookCancel} color="inherit">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleDeleteBookConfirm} color="error" variant="contained">
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                {/* Dialogs */}
+                {/* Add book dialog */}
+                <Dialog 
+                    open={showAddForm} 
+                    onClose={handleAddBookCancel} 
+                    maxWidth="sm" 
+                    fullWidth
+                >
+                    <AddBookForm onCancel={handleAddBookCancel} onSuccess={handleAddBookSuccess} />
+                </Dialog>
 
-        </Container>
+                {/* Edit book dialog */}
+                <Dialog 
+                    open={showEditForm} 
+                    onClose={handleEditBookCancel} 
+                    maxWidth="sm" 
+                    fullWidth
+                >
+                    {editingBook && (
+                        <EditBookForm
+                            book={editingBook}
+                            onCancel={handleEditBookCancel}
+                            onSuccess={handleEditBookSuccess}
+                        />
+                    )}
+                </Dialog>
+
+                {/* Delete confirmation dialog */}
+                <Dialog 
+                    open={showDeleteDialog} 
+                    onClose={handleDeleteBookCancel} 
+                    maxWidth="xs" 
+                    fullWidth
+                >
+                    <DialogTitle>Confirm Delete</DialogTitle>
+                    <DialogContent>
+                        <Typography>
+                            Are you sure you want to delete "{bookToDelete?.title}"?
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleDeleteBookCancel} color="inherit">
+                            Cancel
+                        </Button>
+                        <Button onClick={handleDeleteBookConfirm} color="error" variant="contained">
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+            </Container>
+        </Box>
     );
 }

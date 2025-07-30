@@ -74,11 +74,17 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
     
     return (
         <>
-            <DialogTitle>Add New Book</DialogTitle>
+            <DialogTitle sx={{ 
+                fontWeight: 600,
+                borderBottom: '1px solid #e0e0e0',
+                mb: 2
+            }}>
+                Add New Book
+            </DialogTitle>
             <form onSubmit={handleSubmit}>
                 <DialogContent>
                     {error && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
+                        <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
                             {error}
                         </Alert>
                     )}
@@ -111,11 +117,18 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
                         />
                     </Box>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={onCancelClick} disabled={loading}>
+                <DialogActions sx={{ p: 2}}>
+                    <Button 
+                        onClick={onCancelClick} 
+                        disabled={loading}
+                    >
                         Cancel
                     </Button>
-                    <Button type="submit" variant="contained" disabled={loading}>
+                    <Button 
+                        type="submit" 
+                        variant="contained" 
+                        disabled={loading}
+                    >
                         {loading ? 'Adding...' : 'Add'}
                     </Button>
                 </DialogActions>
