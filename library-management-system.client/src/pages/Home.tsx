@@ -151,20 +151,24 @@ export default function Home() {
                                         {book.description}
                                     </Typography>
                                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                                        <IconButton
+                                        <Button
+                                            variant='contained'
+                                            startIcon={<Edit/>}
                                             color="primary"
+                                            size='small'
                                             onClick={() => handleEditBook(book)}
-                                            size="small"
                                         >
-                                            <Edit />
-                                        </IconButton>
-                                        <IconButton
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant='contained'
+                                            startIcon={<Delete/>}
                                             color="error"
-                                            onClick={() => handleDeleteBook(book)}
                                             size="small"
+                                            onClick={() => handleDeleteBook(book)}
                                         >
-                                            <Delete />
-                                        </IconButton>
+                                            Delete
+                                        </Button>
                                     </Box>
                                 </CardContent>
                             </Card>
