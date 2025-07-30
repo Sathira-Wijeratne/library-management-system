@@ -2,6 +2,8 @@ import {useState, useEffect} from 'react';
 import type { Book } from '../types/Book';
 import AddBookForm from '../components/AddBookForm';
 import EditBookForm from '../components/EditBookForm';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Add, Delete, Edit } from '@mui/icons-material';
 
 export default function Home() {
     const [books, setBooks] = useState<Book[]>([]);
@@ -10,20 +12,22 @@ export default function Home() {
     const [showAddForm, setAddShowForm] = useState<boolean>(false);
     const [showEditForm, setEditShowForm] = useState<boolean>(false);
     const [editingBook, setEditingBook] = useState<Book | null>(null);
+    const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+    const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     useEffect(()=>{
-        // if this is moved outside it would be recreated on every component render causing infinite re-render. How?
         const fetchBooks = async () => {
             try {
                 setLoading(true);
                 const response = await fetch('/api/Books');
 
                 if (!response.ok) {
-                    // Error is JavaScript's built-in error constructor. it's caught by the catch block below.
                     throw new Error(`HTTP error, status : ${response.status}`);
                 }
 
-                //  response.json() parses the JSON response into a JavaScript object/array. It is just type-casting it as Book[]
                 const data : Book[] = await response.json();
                 setBooks(data);
                 setError(null);
@@ -39,9 +43,9 @@ export default function Home() {
     }, []);
 
     // functions
+    // add book
     const handleAddBook = () => {
         setAddShowForm(true);
-        
     }
 
     const handleAddBookCancel = () => {
@@ -53,6 +57,7 @@ export default function Home() {
         setAddShowForm(false);
     }
 
+    // edit book
     const handleEditBook =(book : Book) => {
         setEditingBook(book);
         setEditShowForm(true);
@@ -67,18 +72,23 @@ export default function Home() {
         setEditShowForm(false);
     }
 
-    const handleDeleteBook = async (bookId: number) => {
-        if (!confirm('Are you sure you want to delete this book?')) {
-            return;
-        }
+    // delete book
+    const handleDeleteBook = (book: Book) => {
+        setBookToDelete(book);
+        setShowDeleteDialog(true);
+    };
+
+    const handleDeleteBookConfirm = async () => {
+        if (!bookToDelete) return;
 
         try {
-            const response = await fetch(`/api/Books/${bookId}`, {
+            const response = await fetch(`/api/Books/${bookToDelete.id}`, {
                 method: 'DELETE'
             });
 
             if (response.ok) {
-                setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId));
+                setBooks(prevBooks => prevBooks.filter(book => book.id !== bookToDelete.id));
+                setShowDeleteDialog(false);
             } else {
                 alert('Failed to delete book');
             }
@@ -88,58 +98,178 @@ export default function Home() {
         }
     }
 
+    const handleDeleteBookCancel = () => {
+        setShowDeleteDialog(false);
+        setBookToDelete(null);
+    };
+
     if (loading) {
-        return <div>Loading books...</div>;
+        <Container sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <CircularProgress />
+        </Container>
     }
 
     if (error) {
-        return <div>Error : {error}</div>
+        return (
+            <Container sx={{ mt: 4 }}>
+                <Alert severity="error">Error: {error}</Alert>
+            </Container>
+        );
     }
 
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2>Books</h2>
-                <button onClick={()=> handleAddBook()}>Add book</button>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Button
+                    variant="contained"
+                    startIcon={<Add />}
+                    onClick={handleAddBook}
+                    sx={{ minWidth: isMobile ? 'auto' : 'fit-content' }}
+                >
+                    {'Add Book'}
+                </Button>
+            </Box>
+
+            {/* Mobile view */}
+            {isMobile ? (
+                <Grid container spacing={2}>
                     {books.length === 0 ? (
-                        <tr>
-                            <td colSpan={5}>No Books found</td>
-                        </tr>
+                        <Grid item xs={12}>
+                            <Alert severity="info">No books found</Alert>
+                        </Grid>
                     ) : (
                         books.map((book) => (
-                        // key helps React identify which items changed/moved/added/removed for efficient re-rendering. Mapping works without it, but React will show warnings and performance may suffer.
-                        <tr key={book.id}>
-                            <td>{book.id}</td>
-                            <td>{book.title}</td>
-                            <td>{book.author}</td>
-                            <td>{book.description}</td>
-                            <td>
-                                <div style={{ display: 'flex', gap: '5px' }}>
-                                    <button onClick={()=>handleEditBook(book)}>Edit</button>
-                                    <button onClick={()=>handleDeleteBook(book.id)}>Delete</button>
-                                </div>
-                            </td>
-                        </tr>
-
+                            <Grid item xs={12} key={book.id}>
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom>
+                                            {book.title}
+                                        </Typography>
+                                        <Typography color="text.secondary" gutterBottom>
+                                            {book.author}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ mb: 2 }}>
+                                            {book.description}
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', gap: 1 }}>
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => handleEditBook(book)}
+                                                size="small"
+                                            >
+                                                <Edit />
+                                            </IconButton>
+                                            <IconButton
+                                                color="error"
+                                                onClick={() => handleDeleteBook(book)}
+                                                size="small"
+                                            >
+                                                <Delete />
+                                            </IconButton>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
                         ))
                     )}
-                </tbody>
-            </table>
+                </Grid>
+            ) : (
+                /* Desktop Table View */
+                <Paper elevation={2}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Title</TableCell>
+                                <TableCell>Author</TableCell>
+                                <TableCell>Description</TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                        </TableHead>
+                    </Table>
+                    <TableContainer
+                        sx={{ 
+                            maxHeight: books.length > 5 ? 300 : 'auto',
+                            overflow: 'auto'
+                        }}
+                    >
+                        <Table>
+                            <TableBody>
+                                {books.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center">
+                                            <Typography color="text.secondary">
+                                                No books found
+                                            </Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    books.map((book) => (
+                                        <TableRow key={book.id} hover>
+                                            <TableCell>{book.id}</TableCell>
+                                            <TableCell>{book.title}</TableCell>
+                                            <TableCell>{book.author}</TableCell>
+                                            <TableCell>{book.description}</TableCell>
+                                            <TableCell align="center">
+                                                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                                                    <IconButton
+                                                        color="primary"
+                                                        onClick={() => handleEditBook(book)}
+                                                    >
+                                                        <Edit />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        color="error"
+                                                        onClick={() => handleDeleteBook(book)}
+                                                    >
+                                                        <Delete />
+                                                    </IconButton>
+                                                </Box>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+            )}
 
-            {showAddForm && <AddBookForm onCancel={handleAddBookCancel} onSuccess={handleAddBookSuccess} />}
-            {showEditForm && editingBook && (<EditBookForm book ={editingBook} onCancel={handleEditBookCancel} onSuccess={handleEditBookSuccess} />)}
-        </div>
+            {/* Dialogs */}
+            {/* Add book dialog */}
+            <Dialog open={showAddForm} onClose={handleAddBookCancel} maxWidth="sm" fullWidth>
+                <AddBookForm onCancel={handleAddBookCancel} onSuccess={handleAddBookSuccess} />
+            </Dialog>
+
+            {/* Edit book dialog */}
+            <Dialog open={showEditForm} onClose={handleEditBookCancel} maxWidth="sm" fullWidth>
+                {editingBook && (
+                    <EditBookForm
+                        book={editingBook}
+                        onCancel={handleEditBookCancel}
+                        onSuccess={handleEditBookSuccess}
+                    />
+                )}
+            </Dialog>
+
+            {/* Delete confirmation dialog */}
+            <Dialog open={showDeleteDialog} onClose={handleDeleteBookCancel} maxWidth="xs" fullWidth>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to delete "{bookToDelete?.title}"?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteBookCancel} color="inherit">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleDeleteBookConfirm} color="error" variant="contained">
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+        </Container>
     );
 }
