@@ -1,8 +1,8 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import type { Book } from '../types/Book';
 import AddBookForm from '../components/AddBookForm';
 import EditBookForm from '../components/EditBookForm';
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Add, Delete, Edit } from '@mui/icons-material';
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    useEffect(()=>{
+    useEffect(() => {
         const fetchBooks = async () => {
             try {
                 setLoading(true);
@@ -28,7 +28,7 @@ export default function Home() {
                     throw new Error(`HTTP error, status : ${response.status}`);
                 }
 
-                const data : Book[] = await response.json();
+                const data: Book[] = await response.json();
                 setBooks(data);
                 setError(null);
             } catch (err) {
@@ -58,7 +58,7 @@ export default function Home() {
     }
 
     // edit book
-    const handleEditBook =(book : Book) => {
+    const handleEditBook = (book: Book) => {
         setEditingBook(book);
         setEditShowForm(true);
     }
@@ -68,7 +68,7 @@ export default function Home() {
     }
 
     const handleEditBookSuccess = (updatedBook: Book) => {
-        setBooks(prevBooks => prevBooks.map(book =>book.id === updatedBook.id ? updatedBook : book));
+        setBooks(prevBooks => prevBooks.map(book => book.id === updatedBook.id ? updatedBook : book));
         setEditShowForm(false);
     }
 
@@ -104,9 +104,11 @@ export default function Home() {
     };
 
     if (loading) {
-        <Container sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-            <CircularProgress />
-        </Container>
+        return (
+            <Container sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                <CircularProgress />
+            </Container>
+        );
     }
 
     if (error) {
@@ -119,7 +121,7 @@ export default function Home() {
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3 }}>
                 <Button
                     variant="contained"
                     startIcon={<Add />}
@@ -132,51 +134,54 @@ export default function Home() {
 
             {/* Mobile view */}
             {isMobile ? (
-                <Grid container spacing={2}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     {books.length === 0 ? (
-                        <Grid item xs={12}>
-                            <Alert severity="info">No books found</Alert>
-                        </Grid>
+                        <Alert severity="info">No books found</Alert>
                     ) : (
                         books.map((book) => (
-                            <Grid item xs={12} key={book.id}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography variant="h6" gutterBottom>
-                                            {book.title}
-                                        </Typography>
-                                        <Typography color="text.secondary" gutterBottom>
-                                            {book.author}
-                                        </Typography>
-                                        <Typography variant="body2" sx={{ mb: 2 }}>
-                                            {book.description}
-                                        </Typography>
-                                        <Box sx={{ display: 'flex', gap: 1 }}>
-                                            <IconButton
-                                                color="primary"
-                                                onClick={() => handleEditBook(book)}
-                                                size="small"
-                                            >
-                                                <Edit />
-                                            </IconButton>
-                                            <IconButton
-                                                color="error"
-                                                onClick={() => handleDeleteBook(book)}
-                                                size="small"
-                                            >
-                                                <Delete />
-                                            </IconButton>
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
+                            <Card key={book.id}>
+                                <CardContent>
+                                    <Typography variant="h6" gutterBottom>
+                                        {book.title}
+                                    </Typography>
+                                    <Typography color="text.secondary" gutterBottom>
+                                        {book.author}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ mb: 2 }}>
+                                        {book.description}
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() => handleEditBook(book)}
+                                            size="small"
+                                        >
+                                            <Edit />
+                                        </IconButton>
+                                        <IconButton
+                                            color="error"
+                                            onClick={() => handleDeleteBook(book)}
+                                            size="small"
+                                        >
+                                            <Delete />
+                                        </IconButton>
+                                    </Box>
+                                </CardContent>
+                            </Card>
                         ))
                     )}
-                </Grid>
+                </Box>
             ) : (
                 /* Desktop Table View */
-                <Paper elevation={2}>
-                    <Table>
+                <TableContainer
+                    component={Paper}
+                    elevation={2}
+                    sx={{
+                        maxHeight: 400, 
+                        overflow: 'auto'
+                    }}
+                >
+                    <Table stickyHeader>
                         <TableHead>
                             <TableRow>
                                 <TableCell>ID</TableCell>
@@ -186,53 +191,44 @@ export default function Home() {
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
-                    </Table>
-                    <TableContainer
-                        sx={{ 
-                            maxHeight: books.length > 5 ? 300 : 'auto',
-                            overflow: 'auto'
-                        }}
-                    >
-                        <Table>
-                            <TableBody>
-                                {books.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={5} align="center">
-                                            <Typography color="text.secondary">
-                                                No books found
-                                            </Typography>
+                        <TableBody>
+                            {books.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        <Typography color="text.secondary">
+                                            No books found
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                books.map((book) => (
+                                    <TableRow key={book.id} hover>
+                                        <TableCell>{book.id}</TableCell>
+                                        <TableCell>{book.title}</TableCell>
+                                        <TableCell>{book.author}</TableCell>
+                                        <TableCell>{book.description}</TableCell>
+                                        <TableCell align="center">
+                                            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                                                <IconButton
+                                                    color="primary"
+                                                    onClick={() => handleEditBook(book)}
+                                                >
+                                                    <Edit />
+                                                </IconButton>
+                                                <IconButton
+                                                    color="error"
+                                                    onClick={() => handleDeleteBook(book)}
+                                                >
+                                                    <Delete />
+                                                </IconButton>
+                                            </Box>
                                         </TableCell>
                                     </TableRow>
-                                ) : (
-                                    books.map((book) => (
-                                        <TableRow key={book.id} hover>
-                                            <TableCell>{book.id}</TableCell>
-                                            <TableCell>{book.title}</TableCell>
-                                            <TableCell>{book.author}</TableCell>
-                                            <TableCell>{book.description}</TableCell>
-                                            <TableCell align="center">
-                                                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                                                    <IconButton
-                                                        color="primary"
-                                                        onClick={() => handleEditBook(book)}
-                                                    >
-                                                        <Edit />
-                                                    </IconButton>
-                                                    <IconButton
-                                                        color="error"
-                                                        onClick={() => handleDeleteBook(book)}
-                                                    >
-                                                        <Delete />
-                                                    </IconButton>
-                                                </Box>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Paper>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             )}
 
             {/* Dialogs */}
