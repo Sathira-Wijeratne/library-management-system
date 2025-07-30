@@ -37,7 +37,7 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
             const response = await fetch('/api/books', {
                 method: 'POST',
                 headers : {
-                    'Content-Type' : 'application/json', // is this necessary? won't it work without it?
+                    'Content-Type' : 'application/json',
                 },
                 body: JSON.stringify(addBookData)
             });

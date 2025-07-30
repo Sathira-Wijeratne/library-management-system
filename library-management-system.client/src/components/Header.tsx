@@ -1,7 +1,6 @@
 import { AppBar, Toolbar, Typography } from '@mui/material';
 
 export default function Header(){
-    // what does following do : position, boxshadox, Toolbar, component, flexgrow
     return (
         <AppBar position="static">
             <Toolbar>
