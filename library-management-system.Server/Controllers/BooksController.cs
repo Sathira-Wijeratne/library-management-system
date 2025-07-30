@@ -44,7 +44,9 @@ namespace library_management_system.Server.Controllers
         {
             try
             {
-                return await _context.Books.ToListAsync();
+                return await _context.Books
+                .OrderByDescending(b=> b.Id)
+                .ToListAsync();
             }
             catch (Exception ex)
             {
