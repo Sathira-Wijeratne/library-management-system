@@ -181,14 +181,14 @@ export default function Home() {
                         overflow: 'auto'
                     }}
                 >
-                    <Table stickyHeader>
+                    <Table stickyHeader sx={{ tableLayout: 'fixed', width: '100%' }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Title</TableCell>
-                                <TableCell>Author</TableCell>
-                                <TableCell>Description</TableCell>
-                                <TableCell></TableCell>
+                                <TableCell sx={{ width: '80px', minWidth: '80px' }}>ID</TableCell>
+                                <TableCell sx={{ width: '200px', minWidth: '200px' }}>Title</TableCell>
+                                <TableCell sx={{ width: '150px', minWidth: '150px' }}>Author</TableCell>
+                                <TableCell sx={{ width: 'auto', minWidth: '250px' }}>Description</TableCell>
+                                <TableCell sx={{ width: '120px', minWidth: '120px' }}></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -203,10 +203,38 @@ export default function Home() {
                             ) : (
                                 books.map((book) => (
                                     <TableRow key={book.id} hover>
-                                        <TableCell>{book.id}</TableCell>
-                                        <TableCell>{book.title}</TableCell>
-                                        <TableCell>{book.author}</TableCell>
-                                        <TableCell>{book.description}</TableCell>
+                                        <TableCell sx={{ 
+                                            wordWrap: 'break-word',
+                                            maxHeight: '100px',
+                                            overflow: 'hidden'
+                                        }}>
+                                            {book.id}
+                                        </TableCell>
+                                        <TableCell sx={{ 
+                                            wordWrap: 'break-word',
+                                            whiteSpace: 'normal',
+                                            maxHeight: '100px',
+                                            overflow: 'auto'
+                                        }}>
+                                            {book.title}
+                                        </TableCell>
+                                        <TableCell sx={{ 
+                                            wordWrap: 'break-word',
+                                            whiteSpace: 'normal',
+                                            maxHeight: '100px',
+                                            overflow: 'auto'
+                                        }}>
+                                            {book.author}
+                                        </TableCell>
+                                        <TableCell sx={{ 
+                                            wordWrap: 'break-word',
+                                            whiteSpace: 'normal',
+                                            maxHeight: '100px',
+                                            overflow: 'auto',
+                                            lineHeight: 1.4
+                                        }}>
+                                            {book.description}
+                                        </TableCell>
                                         <TableCell align="center">
                                             <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                                                 <IconButton
