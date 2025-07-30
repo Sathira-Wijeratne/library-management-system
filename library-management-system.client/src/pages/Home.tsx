@@ -98,7 +98,6 @@ export default function Home() {
 
     return (
         <div>
-            <h1>Library Management System</h1>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Books</h2>
                 <button onClick={()=> handleAddBook()}>Add book</button>
