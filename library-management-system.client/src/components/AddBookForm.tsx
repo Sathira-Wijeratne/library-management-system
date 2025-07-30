@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Book } from "../types/Book";
 import { validateBookInput } from "../utils/bookValidation";
+import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 
 interface AddBookFormProps {
     onCancel: () => void;
@@ -14,6 +15,7 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
         description:''
     });
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const validateInput = () => {
         const errorMessage = validateBookInput(addBookData);
@@ -28,6 +30,8 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
         e.preventDefault();
         
         if (!validateInput()) return;
+
+        setLoading(true);
 
         try {
             const response = await fetch('/api/books', {
@@ -69,26 +73,53 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
     }
     
     return (
-        <div>
-            <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px'}}>
-               <div>
-                   <label>Title</label>
-                   <input type="text" name="title" value={addBookData.title} required onChange={(e) => setAddBookData({...addBookData, title: e.target.value})} style={{marginLeft: '10px'}}/> 
-               </div>
-               <div>
-                   <label>Author</label> 
-                   <input type="text" name="author" value={addBookData.author} required onChange={(e) => setAddBookData({...addBookData, author: e.target.value})} style={{marginLeft: '10px'}}/> 
-               </div>
-               <div>
-                   <label>Description</label> 
-                   <input type="text" name="description" value={addBookData.description} required onChange={(e) => setAddBookData({...addBookData, description: e.target.value})} style={{marginLeft: '10px'}}/> 
-               </div>
-               {error && <div style={{color: 'red'}}>{error}</div>}
-               <div>
-                   <button type="submit">Add Book</button>
-                   <button type="button" onClick={onCancelClick} style={{marginLeft: '10px'}}>Cancel</button>
-               </div>
+        <>
+            <DialogTitle>Add New Book</DialogTitle>
+            <form onSubmit={handleSubmit}>
+                <DialogContent>
+                    {error && (
+                        <Alert severity="error" sx={{ mb: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <TextField
+                            label="Title"
+                            value={addBookData.title}
+                            onChange={(e) => setAddBookData({ ...addBookData, title: e.target.value })}
+                            required
+                            fullWidth
+                            disabled={loading}
+                        />
+                        <TextField
+                            label="Author"
+                            value={addBookData.author}
+                            onChange={(e) => setAddBookData({ ...addBookData, author: e.target.value })}
+                            required
+                            fullWidth
+                            disabled={loading}
+                        />
+                        <TextField
+                            label="Description"
+                            value={addBookData.description}
+                            onChange={(e) => setAddBookData({ ...addBookData, description: e.target.value })}
+                            required
+                            fullWidth
+                            multiline
+                            rows={4}
+                            disabled={loading}
+                        />
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onCancelClick} disabled={loading}>
+                        Cancel
+                    </Button>
+                    <Button type="submit" variant="contained" disabled={loading}>
+                        {loading ? 'Adding...' : 'Add'}
+                    </Button>
+                </DialogActions>
             </form>
-        </div>
+        </>
     );
 }
