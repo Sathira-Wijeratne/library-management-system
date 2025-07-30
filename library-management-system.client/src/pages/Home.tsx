@@ -53,7 +53,7 @@ export default function Home() {
     }
 
     const handleAddBookSuccess = (newBook: Book) => {
-        setBooks(prevBooks => [...prevBooks, newBook]);
+        setBooks(prevBooks => [newBook, ...prevBooks]);
         setAddShowForm(false);
     }
 
