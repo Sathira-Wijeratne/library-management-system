@@ -120,17 +120,22 @@ export default function Home() {
     }
 
     return (
-        <Box sx={{ 
-            // minHeight: '100vh',
+        <Box sx={{
+            minHeight: '89vh',
             backgroundColor: '#f5f5f5',
         }}>
             <Container maxWidth="lg" sx={{ pt: 4, pb: 4 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                    <Typography variant='h5' sx={{
+                        fontWeight: 600
+                    }}>
+                        Books
+                    </Typography>
                     <Button
                         variant="contained"
                         startIcon={<Add />}
                         onClick={handleAddBook}
-                        sx={{ 
+                        sx={{
                             minWidth: isMobile ? 'auto' : 'fit-content',
                             borderRadius: 2,
                             textTransform: 'none',
@@ -150,19 +155,19 @@ export default function Home() {
                             books.map((book) => (
                                 <Card key={book.id}>
                                     <CardContent>
-                                        <Typography variant="h6" gutterBottom sx={{wordBreak: 'break-all'}}>
+                                        <Typography variant="h6" gutterBottom sx={{ wordBreak: 'break-all' }}>
                                             {book.title}
                                         </Typography>
-                                        <Typography color="text.secondary" gutterBottom sx={{wordBreak: 'break-all'}}>
+                                        <Typography color="text.secondary" gutterBottom sx={{ wordBreak: 'break-all' }}>
                                             {book.author}
                                         </Typography>
-                                        <Typography variant="body2" sx={{ mb: 2, wordBreak: 'break-all'}}>
+                                        <Typography variant="body2" sx={{ mb: 2, wordBreak: 'break-all' }}>
                                             {book.description}
                                         </Typography>
                                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                                             <Button
                                                 variant='contained'
-                                                startIcon={<Edit/>}
+                                                startIcon={<Edit />}
                                                 color="primary"
                                                 size='small'
                                                 onClick={() => handleEditBook(book)}
@@ -171,7 +176,7 @@ export default function Home() {
                                             </Button>
                                             <Button
                                                 variant='contained'
-                                                startIcon={<Delete/>}
+                                                startIcon={<Delete />}
                                                 color="error"
                                                 size="small"
                                                 onClick={() => handleDeleteBook(book)}
@@ -190,43 +195,43 @@ export default function Home() {
                         component={Paper}
                         elevation={3}
                         sx={{
-                            maxHeight: 400, 
+                            maxHeight: 400,
                             overflow: 'auto',
                         }}
                     >
                         <Table stickyHeader sx={{ tableLayout: 'fixed', width: '100%' }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell sx={{ 
-                                        width: '80px', 
+                                    <TableCell sx={{
+                                        width: '80px',
                                         minWidth: '80px',
                                         backgroundColor: '#f8f9fa',
                                         fontWeight: 600,
                                         borderRight: '1px solid #e0e0e0'
                                     }}>ID</TableCell>
-                                    <TableCell sx={{ 
-                                        width: '200px', 
+                                    <TableCell sx={{
+                                        width: '200px',
                                         minWidth: '200px',
                                         backgroundColor: '#f8f9fa',
                                         fontWeight: 600,
                                         borderRight: '1px solid #e0e0e0'
                                     }}>Title</TableCell>
-                                    <TableCell sx={{ 
-                                        width: '150px', 
+                                    <TableCell sx={{
+                                        width: '150px',
                                         minWidth: '150px',
                                         backgroundColor: '#f8f9fa',
                                         fontWeight: 600,
                                         borderRight: '1px solid #e0e0e0'
                                     }}>Author</TableCell>
-                                    <TableCell sx={{ 
-                                        width: 'auto', 
+                                    <TableCell sx={{
+                                        width: 'auto',
                                         minWidth: '250px',
                                         backgroundColor: '#f8f9fa',
                                         fontWeight: 600,
                                         borderRight: '1px solid #e0e0e0'
                                     }}>Description</TableCell>
-                                    <TableCell sx={{ 
-                                        width: '120px', 
+                                    <TableCell sx={{
+                                        width: '120px',
                                         minWidth: '120px',
                                         backgroundColor: '#f8f9fa',
                                         fontWeight: 600
@@ -245,7 +250,7 @@ export default function Home() {
                                 ) : (
                                     books.map((book) => (
                                         <TableRow key={book.id} hover>
-                                            <TableCell sx={{ 
+                                            <TableCell sx={{
                                                 wordWrap: 'break-word',
                                                 maxHeight: '100px',
                                                 overflow: 'hidden',
@@ -253,7 +258,7 @@ export default function Home() {
                                             }}>
                                                 {book.id}
                                             </TableCell>
-                                            <TableCell sx={{ 
+                                            <TableCell sx={{
                                                 wordWrap: 'break-word',
                                                 whiteSpace: 'normal',
                                                 maxHeight: '100px',
@@ -262,7 +267,7 @@ export default function Home() {
                                             }}>
                                                 {book.title}
                                             </TableCell>
-                                            <TableCell sx={{ 
+                                            <TableCell sx={{
                                                 wordWrap: 'break-word',
                                                 whiteSpace: 'normal',
                                                 maxHeight: '100px',
@@ -271,7 +276,7 @@ export default function Home() {
                                             }}>
                                                 {book.author}
                                             </TableCell>
-                                            <TableCell sx={{ 
+                                            <TableCell sx={{
                                                 wordWrap: 'break-word',
                                                 whiteSpace: 'normal',
                                                 maxHeight: '100px',
@@ -307,20 +312,20 @@ export default function Home() {
 
                 {/* Dialogs */}
                 {/* Add book dialog */}
-                <Dialog 
-                    open={showAddForm} 
-                    onClose={handleAddBookCancel} 
-                    maxWidth="sm" 
+                <Dialog
+                    open={showAddForm}
+                    onClose={handleAddBookCancel}
+                    maxWidth="sm"
                     fullWidth
                 >
                     <AddBookForm onCancel={handleAddBookCancel} onSuccess={handleAddBookSuccess} />
                 </Dialog>
 
                 {/* Edit book dialog */}
-                <Dialog 
-                    open={showEditForm} 
-                    onClose={handleEditBookCancel} 
-                    maxWidth="sm" 
+                <Dialog
+                    open={showEditForm}
+                    onClose={handleEditBookCancel}
+                    maxWidth="sm"
                     fullWidth
                 >
                     {editingBook && (
@@ -333,10 +338,10 @@ export default function Home() {
                 </Dialog>
 
                 {/* Delete confirmation dialog */}
-                <Dialog 
-                    open={showDeleteDialog} 
-                    onClose={handleDeleteBookCancel} 
-                    maxWidth="xs" 
+                <Dialog
+                    open={showDeleteDialog}
+                    onClose={handleDeleteBookCancel}
+                    maxWidth="xs"
                     fullWidth
                 >
                     <DialogTitle>Confirm Delete</DialogTitle>
