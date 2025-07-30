@@ -1,39 +1,43 @@
 import { useState } from "react";
 import type { Book } from "../types/Book";
 import { validateBookInput } from "../utils/bookValidation";
+import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 
-interface EditBookFormProps{
-    book : Book;
-    onCancel : () => void;
-    onSuccess : (newBook : Book) => void;
+interface EditBookFormProps {
+    book: Book;
+    onCancel: () => void;
+    onSuccess: (newBook: Book) => void;
 }
 
-export default function EditBookForm({book, onCancel, onSuccess} : EditBookFormProps){
+export default function EditBookForm({ book, onCancel, onSuccess }: EditBookFormProps) {
     const [editBookData, setEditBookData] = useState(book);
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const validateInput = () => {
         const errorMessage = validateBookInput(editBookData);
-        if(errorMessage) {
+        if (errorMessage) {
             setError(errorMessage);
             return false;
         }
 
-         return true;
+        return true;
     };
 
-    const handleSubmit = async (e:React.FormEvent)=>{
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if(!validateInput()) return;
+        if (!validateInput()) return;
 
-        try{
+        setLoading(true);
+
+        try {
             const response = await fetch(`/api/Books/${editBookData.id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(editBookData)
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(editBookData)
             });
 
             if (response.ok) {
@@ -47,7 +51,7 @@ export default function EditBookForm({book, onCancel, onSuccess} : EditBookFormP
             } else {
                 setError("An unexpected error occurred while updating the book.");
             }
-        } catch(err){
+        } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
             console.error('Error updating book:', err);
         }
@@ -59,26 +63,53 @@ export default function EditBookForm({book, onCancel, onSuccess} : EditBookFormP
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px'}}>
-               <div>
-                   <label>Title</label>
-                   <input type="text" name="title" value={editBookData.title} required onChange={(e) => setEditBookData({...editBookData, title: e.target.value})} style={{marginLeft: '10px'}}/> 
-               </div>
-               <div>
-                   <label>Author</label> 
-                   <input type="text" name="author" value={editBookData.author} required onChange={(e) => setEditBookData({...editBookData, author: e.target.value})} style={{marginLeft: '10px'}}/> 
-               </div>
-               <div>
-                   <label>Description</label> 
-                   <input type="text" name="description" value={editBookData.description} required onChange={(e) => setEditBookData({...editBookData, description: e.target.value})} style={{marginLeft: '10px'}}/> 
-               </div>
-               {error && <div style={{color: 'red'}}>{error}</div>}
-               <div>
-                   <button type="submit">Edit Book</button>
-                   <button type="button" onClick={onCancelClick} style={{marginLeft: '10px'}}>Cancel</button>
-               </div>
+        <>
+            <DialogTitle>Edit Book</DialogTitle>
+            <form onSubmit={handleSubmit}>
+                <DialogContent>
+                    {error && (
+                        <Alert severity="error" sx={{ mb: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <TextField
+                            label="Title"
+                            value={editBookData.title}
+                            onChange={(e) => setEditBookData({ ...editBookData, title: e.target.value })}
+                            required
+                            fullWidth
+                            disabled={loading}
+                        />
+                        <TextField
+                            label="Author"
+                            value={editBookData.author}
+                            onChange={(e) => setEditBookData({ ...editBookData, author: e.target.value })}
+                            required
+                            fullWidth
+                            disabled={loading}
+                        />
+                        <TextField
+                            label="Description"
+                            value={editBookData.description}
+                            onChange={(e) => setEditBookData({ ...editBookData, description: e.target.value })}
+                            required
+                            fullWidth
+                            multiline
+                            rows={4}
+                            disabled={loading}
+                        />
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onCancelClick} disabled={loading}>
+                        Cancel
+                    </Button>
+                    <Button type="submit" variant="contained" disabled={loading}>
+                        {loading ? 'Editing...' : 'Update'}
+                    </Button>
+                </DialogActions>
             </form>
-        </div>
+        </>
     );
 }
