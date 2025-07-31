@@ -1,3 +1,4 @@
+// Book data interface for validation
 export interface BookData {
     title: string;
     author: string;
