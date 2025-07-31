@@ -7,7 +7,7 @@ export interface BookData {
 
 export const validateBookInput = (bookData: BookData): string | null => {
     const titleRegex = /^[a-zA-Z0-9\s\-\.\,\;\:\!\?\'\/\"]+$/;
-    const authorRegex = /^[a-zA-Z\s\-\.]+$/;
+    const authorRegex = /^[a-zA-Z\s\-\.\,]+$/;
     const descriptionRegex = /^[a-zA-Z0-9\s\-\.\,\:\;\!\?\'\"\(\)]+$/;
 
     if (bookData.title.length > 100) {
@@ -20,7 +20,7 @@ export const validateBookInput = (bookData: BookData): string | null => {
         return "Author name must be 100 characters or less.";
     }
     if (!authorRegex.test(bookData.author)) {
-        return "Author name can only contain letters, spaces, hyphens, and periods";
+        return "Author name can only contain letters, spaces, hyphens, periods, and commas";
     }
     if (bookData.description.length > 250) {
         return "Description must be 250 characters or less.";
