@@ -34,7 +34,7 @@ namespace library_management_system.Server.Controllers
         // endpoints
 
         /// <summary>
-        /// Retrieves all books.
+        /// Retrieves all books in descending order based on Book Id.
         /// </summary>
         /// <returns>A list of books.</returns>
         [HttpGet]
