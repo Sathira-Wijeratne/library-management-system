@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using library_management_system.Server.Data;
 using library_management_system.Server.Data.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace library_management_system.Server.Controllers
 {
@@ -15,6 +15,7 @@ namespace library_management_system.Server.Controllers
     /// </remarks>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BooksController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -96,7 +97,7 @@ namespace library_management_system.Server.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> PutBook(int id, Book book)
+        public async Task<IActionResult> PutBook(int id, [FromBody] Book book)
         {
             Book bookEntity;
 
@@ -150,7 +151,7 @@ namespace library_management_system.Server.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(Book))]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public async Task<ActionResult<Book>> PostBook([FromBody] Book book)
         {
             try
             {
