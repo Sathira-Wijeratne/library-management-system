@@ -1,6 +1,7 @@
 ﻿using library_management_system.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using library_management_system.Server.Controllers;
+using library_management_system.Middleware.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 var app = builder.Build();
+
+// register the GlobalExceptionHandlingMiddleware to handle exceptions globally
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
