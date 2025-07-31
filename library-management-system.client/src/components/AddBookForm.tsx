@@ -3,12 +3,15 @@ import type { Book } from "../types/Book";
 import { validateBookInput } from "../utils/bookValidation";
 import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 
+// Props interface for the AddBookForm component
 interface AddBookFormProps {
     onCancel: () => void;
     onSuccess: (newBook:Book) => void;
 }
 
+// AddBookForm component for adding a new book
 export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
+    // States
     const [addBookData, setAddBookData] = useState({
         title:'',
         author:'',
@@ -17,6 +20,7 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
+    // functions
     const validateInput = () => {
         const errorMessage = validateBookInput(addBookData);
         if (errorMessage) {

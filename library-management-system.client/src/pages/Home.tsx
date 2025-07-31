@@ -6,6 +6,7 @@ import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Dia
 import { Add, Delete, Edit } from '@mui/icons-material';
 
 export default function Home() {
+    // states
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -15,6 +16,7 @@ export default function Home() {
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
     const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
 
+    // Media query for responsive design
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 

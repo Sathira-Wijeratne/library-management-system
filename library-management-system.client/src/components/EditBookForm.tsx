@@ -3,6 +3,7 @@ import type { Book } from "../types/Book";
 import { validateBookInput } from "../utils/bookValidation";
 import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 
+// Props interface for the EditBookForm component
 interface EditBookFormProps {
     book: Book;
     onCancel: () => void;
@@ -10,10 +11,12 @@ interface EditBookFormProps {
 }
 
 export default function EditBookForm({ book, onCancel, onSuccess }: EditBookFormProps) {
+    // states
     const [editBookData, setEditBookData] = useState(book);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
+    // functions
     const validateInput = () => {
         const errorMessage = validateBookInput(editBookData);
         if (errorMessage) {
