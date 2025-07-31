@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Book } from "../types/Book";
 import { validateBookInput } from "../utils/bookValidation";
 import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import AuthService from '../utils/authService';
 
 // Props interface for the EditBookForm component
 interface EditBookFormProps {
@@ -35,11 +36,8 @@ export default function EditBookForm({ book, onCancel, onSuccess }: EditBookForm
         setLoading(true);
 
         try {
-            const response = await fetch(`/api/Books/${editBookData.id}`, {
+            const response = await AuthService.authenticatedFetch(`/api/Books/${editBookData.id}`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
                 body: JSON.stringify(editBookData)
             });
 

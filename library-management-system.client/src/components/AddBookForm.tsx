@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Book } from "../types/Book";
 import { validateBookInput } from "../utils/bookValidation";
 import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import AuthService from '../utils/authService';
 
 // Props interface for the AddBookForm component
 interface AddBookFormProps {
@@ -38,11 +39,8 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
         setLoading(true);
 
         try {
-            const response = await fetch('/api/books', {
+            const response = await AuthService.authenticatedFetch('/api/books', {
                 method: 'POST',
-                headers : {
-                    'Content-Type' : 'application/json',
-                },
                 body: JSON.stringify(addBookData)
             });
 

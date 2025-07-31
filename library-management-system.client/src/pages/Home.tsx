@@ -4,6 +4,8 @@ import AddBookForm from '../components/AddBookForm';
 import EditBookForm from '../components/EditBookForm';
 import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Add, Delete, Edit } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import AuthService from '../utils/authService';
 
 export default function Home() {
     // states
@@ -15,16 +17,23 @@ export default function Home() {
     const [editingBook, setEditingBook] = useState<Book | null>(null);
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
     const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
+    
+    const navigate = useNavigate();
 
     // Media query for responsive design
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     useEffect(() => {
+        if (!AuthService.isAuthenticated()) {
+            navigate('/login');
+            return;
+        }
+
         const fetchBooks = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('/api/Books');
+                const response = await AuthService.authenticatedFetch('/api/Books');
 
                 if (!response.ok) {
                     throw new Error(`HTTP error, status : ${response.status}`);
@@ -42,7 +51,7 @@ export default function Home() {
         };
 
         fetchBooks();
-    }, []);
+    }, [navigate]);
 
     // functions
     // add book
@@ -84,7 +93,7 @@ export default function Home() {
         if (!bookToDelete) return;
 
         try {
-            const response = await fetch(`/api/Books/${bookToDelete.id}`, {
+            const response = await AuthService.authenticatedFetch(`/api/Books/${bookToDelete.id}`, {
                 method: 'DELETE'
             });
 
