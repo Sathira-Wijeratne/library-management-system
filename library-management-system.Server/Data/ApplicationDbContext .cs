@@ -19,5 +19,11 @@ namespace library_management_system.Server.Data
         /// This property represents the Books table in the database.
         /// </summary>
         public DbSet<Book> Books { get; set; }
+
+        /// <summary>
+        /// Gets or sets the collection of users in the database.
+        /// This property represents the Users table in the database.
+        /// </summary>
+        public DbSet<User> Users { get; set; }
     }
 }
