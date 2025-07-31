@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Text;
 using library_management_system.Server.Models;
 using Microsoft.AspNetCore.Authorization;
+using library_management_system.Server.Data;
+using library_management_system.Server.Data.Entities;
 
 namespace library_management_system.Server.Controllers
 {
@@ -21,16 +23,19 @@ namespace library_management_system.Server.Controllers
     {
         private readonly IConfiguration _configuration; //needed to read settings from appsettings.json files
         private readonly ILogger<AuthController> _logger;
+        private readonly ApplicationDbContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="logger">The logger.</param>
-        public AuthController(IConfiguration configuration, ILogger<AuthController> logger)
+        /// <param name="context">The database context.</param>
+        public AuthController(IConfiguration configuration, ILogger<AuthController> logger, ApplicationDbContext context)
         {
             _configuration = configuration;
             _logger = logger;
+            _context = context;
         }
 
         /// <summary>
@@ -38,14 +43,11 @@ namespace library_management_system.Server.Controllers
         /// </summary>
         /// <param name="user">The user login credentials.</param>
         /// <returns>A JWT token if authentication is successful, otherwise Unauthorized.</returns>
-        /// <response code="200">Returns the JWT token</response>
-        /// <response code="401">If the credentials are invalid</response>
-        /// <response code="400">If the request is malformed</response>
         [HttpPost("login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(400)]
-        public IActionResult Login([FromBody] UserLogin user)
+        public async Task<IActionResult> Login([FromBody] UserLogin user)
         {
             try
             {
@@ -55,8 +57,9 @@ namespace library_management_system.Server.Controllers
                     return BadRequest("Username and password are required.");
                 }
 
-                // TODO : Check against database credentials
-                if (user.Username == "admin" && user.Password == "password")
+                // Check credentials against database
+                var dbUser = await _context.Users.FindAsync(user.Username);
+                if (dbUser != null && BCrypt.Net.BCrypt.Verify(user.Password, dbUser.PasswordHash))
                 {
                     var token = GenerateJwtToken(user.Username);
                     _logger.LogInformation("User {Username} logged in successfully", user.Username);
@@ -74,12 +77,65 @@ namespace library_management_system.Server.Controllers
         }
 
         /// <summary>
+        /// Registers a new user with username and password validation.
+        /// Password is hashed before storing in database.
+        /// </summary>
+        /// <param name="registration">The user registration data with password confirmation.</param>
+        /// <returns>Success message if registration is successful, otherwise error details.</returns>
+        [HttpPost("register")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Register([FromBody] UserRegistration registration)
+        {
+            try
+            {
+                // if (!ModelState.IsValid)
+                // {
+                //     _logger.LogWarning("Registration attempt with invalid model state");
+                //     return BadRequest(ModelState);
+                // }
+
+                // Check if username already exists
+                var existingUser = await _context.Users.FindAsync(registration.Username);
+                if (existingUser != null)
+                {
+                    _logger.LogWarning("Registration attempt with existing username: {Username}", registration.Username);
+                    return BadRequest("Username already exists.");
+                }
+
+                // Hash password
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registration.Password);
+
+                // Create new user
+                var newUser = new User
+                {
+                    Username = registration.Username,
+                    PasswordHash = hashedPassword
+                };
+
+                // Add user to database
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+                
+                return CreatedAtAction(
+                    nameof(GetCurrentUser), 
+                    new { username = newUser.Username }, 
+                    new { message = "User registered successfully", username = newUser.Username }
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during user registration");
+                return StatusCode(500, "An error occurred during registration.");
+            }
+        }
+
+        /// <summary>
         /// Returns information about the currently authenticated user.
         /// This endpoint is protected and requires a valid JWT token.
         /// </summary>
         /// <returns>User information from the JWT token.</returns>
-        /// <response code="200">Returns the user information</response>
-        /// <response code="401">If the user is not authenticated</response>
         [HttpGet("me")]
         [Authorize]
         [ProducesResponseType(200)]
