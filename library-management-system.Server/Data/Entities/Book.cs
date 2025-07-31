@@ -29,7 +29,7 @@ namespace library_management_system.Server.Data.Entities
         /// </summary>
         [Required(ErrorMessage = "Author is required.")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "The author's name should be between 1 and 100 characters.")]
-        [RegularExpression(@"^[a-zA-Z\s\-\.]+$", ErrorMessage = "Author name can only contain letters, spaces, hyphens, and periods")]
+        [RegularExpression(@"^[a-zA-Z\s\-\.\,]+$", ErrorMessage = "Author name can only contain letters, spaces, hyphens, and periods")]
         public required string Author { get; set; }
 
         /// <summary>
