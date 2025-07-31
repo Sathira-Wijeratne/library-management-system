@@ -1,6 +1,5 @@
 ﻿using library_management_system.Server.Data;
 using Microsoft.EntityFrameworkCore;
-using library_management_system.Server.Controllers;
 using library_management_system.Middleware.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
