@@ -197,12 +197,5 @@ namespace library_management_system.Server.Controllers
             return NoContent();
         }
 
-        // helper methods
-
-        // public bool IsBookValid(Book book)
-        // {
-
-        //     return true;
-        // }
     }
 }
