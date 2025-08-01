@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { Book } from "../types/Book";
-import { validateBookInput } from "../utils/bookValidation";
 import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import AuthService from '../utils/authService';
+import AuthService from '../utils/AuthService';
+import { BookValidation } from "../utils/ValidateBook";
 
 // Props interface for the EditBookForm component
 interface EditBookFormProps {
@@ -19,7 +19,7 @@ export default function EditBookForm({ book, onCancel, onSuccess }: EditBookForm
 
     // functions
     const validateInput = () => {
-        const errorMessage = validateBookInput(editBookData);
+        const errorMessage = BookValidation.validateBookInput(editBookData);
         if (errorMessage) {
             setError(errorMessage);
             return false;

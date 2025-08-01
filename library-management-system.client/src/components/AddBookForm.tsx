@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { Book } from "../types/Book";
-import { validateBookInput } from "../utils/bookValidation";
 import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import AuthService from '../utils/authService';
+import AuthService from "../utils/AuthService";
+import { BookValidation } from "../utils/ValidateBook";
 
 // Props interface for the AddBookForm component
 interface AddBookFormProps {
@@ -23,7 +23,7 @@ export default function AddBookForm({ onCancel, onSuccess }: AddBookFormProps){
 
     // functions
     const validateInput = () => {
-        const errorMessage = validateBookInput(addBookData);
+        const errorMessage = BookValidation.validateBookInput(addBookData);
         if (errorMessage) {
             setError(errorMessage);
             return false;
