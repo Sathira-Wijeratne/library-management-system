@@ -244,7 +244,7 @@ export default function Home() {
                                         minWidth: '120px',
                                         backgroundColor: '#f8f9fa',
                                         fontWeight: 600
-                                    }}>Actions</TableCell>
+                                    }}></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
