@@ -50,7 +50,7 @@ export default function Login(){
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('jwt_token', data.token);
+                AuthService.setToken(data.token);
                 // TODO
                 window.location.href = '/';
             } else {
