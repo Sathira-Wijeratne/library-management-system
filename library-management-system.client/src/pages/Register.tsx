@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {Container, Paper, TextField, Button, Typography, Alert, Box, useTheme, useMediaQuery} from '@mui/material';
+import {Container, Paper, TextField, Button, Typography, Alert, Box} from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserValidation } from '../utils/ValidateUser';
 import AuthService from '../utils/AuthService';
+import { useResponsive } from '../contexts/ResponsiveContext';
 
 // Interface for the registration form data
 interface RegistrationForm {
@@ -21,10 +22,7 @@ export default function Register(){
     const [success, setSuccess] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
-    
-    // Media query for responsive design
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const { isMobile } = useResponsive();
 
     useEffect(() => {
         if (AuthService.isAuthenticated()) {

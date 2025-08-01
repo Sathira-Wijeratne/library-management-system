@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import type { Book } from '../types/Book';
 import AddBookForm from '../components/AddBookForm';
 import EditBookForm from '../components/EditBookForm';
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../utils/AuthService';
+import { useResponsive } from '../contexts/ResponsiveContext';
 
 export default function Home() {
     // states
@@ -19,10 +20,7 @@ export default function Home() {
     const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
     
     const navigate = useNavigate();
-
-    // Media query for responsive design
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const { isMobile } = useResponsive();
 
     useEffect(() => {
         if (!AuthService.isAuthenticated()) {
