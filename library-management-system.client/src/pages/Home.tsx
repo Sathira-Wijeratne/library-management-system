@@ -166,13 +166,13 @@ export default function Home() {
                             books.map((book) => (
                                 <Card key={book.id}>
                                     <CardContent>
-                                        <Typography variant="h6" gutterBottom sx={{ wordBreak: 'break-all' }}>
+                                        <Typography variant="h6" gutterBottom sx={{ wordBreak: 'break-word' }}>
                                             {book.title}
                                         </Typography>
-                                        <Typography color="text.secondary" gutterBottom sx={{ wordBreak: 'break-all' }}>
+                                        <Typography color="text.secondary" gutterBottom sx={{ wordBreak: 'break-word' }}>
                                             {book.author}
                                         </Typography>
-                                        <Typography variant="body2" sx={{ mb: 2, wordBreak: 'break-all' }}>
+                                        <Typography variant="body2" sx={{ mb: 2, wordBreak: 'break-word' }}>
                                             {book.description}
                                         </Typography>
                                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
