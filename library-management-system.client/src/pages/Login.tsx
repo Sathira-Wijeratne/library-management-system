@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Container,Paper,TextField,Button,Typography,Alert,Box} from '@mui/material';
-import { Link } from 'react-router-dom';
-import { validateUserInput } from '../utils/userValidation';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserValidation } from '../utils/ValidateUser';
+import AuthService from '../utils/AuthService';
 
 // Interface for the login form data
 interface LoginForm {
@@ -13,9 +14,16 @@ export default function Login(){
     const [loginData, setLoginData] = useState<LoginForm>({ username: '', password: '' });
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (AuthService.isAuthenticated()) {
+            navigate('/');
+        }
+    }, [navigate]);
 
     const validateInput = () => {
-        const errorMessage = validateUserInput(loginData);
+        const errorMessage = UserValidation.validateUserInput(loginData);
         if (errorMessage) {
             setError(errorMessage);
             return false;

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Container, Paper, TextField, Button, Typography, Alert, Box} from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
-import { validateUserInput } from '../utils/userValidation';
+import { UserValidation } from '../utils/ValidateUser';
+import AuthService from '../utils/AuthService';
 
 // Interface for the registration form data
 interface RegistrationForm {
@@ -20,6 +21,13 @@ export default function Register(){
     const [success, setSuccess] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
+    
+        useEffect(() => {
+            if (AuthService.isAuthenticated()) {
+                navigate('/');
+                return;
+            }
+        }, [navigate]);
 
     const handleChange = () => {
         setError('');
@@ -27,7 +35,7 @@ export default function Register(){
     };
 
     const validateInput = () => {
-        const errorMessage = validateUserInput(registerData);
+        const errorMessage = UserValidation.validateUserInput(registerData);
         if (errorMessage) {
             setError(errorMessage);
             return false;
