@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Container, Paper, TextField, Button, Typography, Alert, Box} from '@mui/material';
+import {Container, Paper, TextField, Button, Typography, Alert, Box, useTheme, useMediaQuery} from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserValidation } from '../utils/ValidateUser';
 import AuthService from '../utils/AuthService';
@@ -22,12 +22,16 @@ export default function Register(){
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     
-        useEffect(() => {
-            if (AuthService.isAuthenticated()) {
-                navigate('/');
-                return;
-            }
-        }, [navigate]);
+    // Media query for responsive design
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+    useEffect(() => {
+        if (AuthService.isAuthenticated()) {
+            navigate('/');
+            return;
+        }
+    }, [navigate]);
 
     const handleChange = () => {
         setError('');
@@ -79,10 +83,10 @@ export default function Register(){
     };
 
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="sm" sx={{ marginTop: 2 }}>
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
                 <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-                    <Typography variant="h4" align="center" gutterBottom>
+                    <Typography variant={isMobile ? "h5" : "h4"} align="center" gutterBottom>
                         Register
                     </Typography>
                     
