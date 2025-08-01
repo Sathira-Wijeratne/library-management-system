@@ -90,12 +90,6 @@ namespace library_management_system.Server.Controllers
         {
             try
             {
-                // if (!ModelState.IsValid)
-                // {
-                //     _logger.LogWarning("Registration attempt with invalid model state");
-                //     return BadRequest(ModelState);
-                // }
-
                 // Check if username already exists
                 var existingUser = await _context.Users.FindAsync(registration.Username);
                 if (existingUser != null)
