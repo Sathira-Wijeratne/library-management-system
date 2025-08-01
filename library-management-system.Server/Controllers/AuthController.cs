@@ -59,6 +59,19 @@ namespace library_management_system.Server.Controllers
 
                 // Check credentials against database
                 var dbUser = await _context.Users.FindAsync(user.Username);
+
+                if (dbUser == null)
+                {
+                    _logger.LogWarning("Failed login attempt for non-existent user: {Username}", user.Username);
+                    return Unauthorized("User does not exist.");
+                }
+
+                if (dbUser != null && !BCrypt.Net.BCrypt.Verify(user.Password, dbUser.PasswordHash))
+                {
+                    _logger.LogWarning("Failed login attempt for username: {Username}", user.Username);
+                    return Unauthorized("Invalid password.");
+                }
+
                 if (dbUser != null && BCrypt.Net.BCrypt.Verify(user.Password, dbUser.PasswordHash))
                 {
                     var token = GenerateJwtToken(user.Username);
@@ -128,6 +141,7 @@ namespace library_management_system.Server.Controllers
         /// <summary>
         /// Returns information about the currently authenticated user.
         /// This endpoint is protected and requires a valid JWT token.
+        /// It can be used in the future to retrieve user details without needing to pass credentials
         /// </summary>
         /// <returns>User information from the JWT token.</returns>
         [HttpGet("me")]
