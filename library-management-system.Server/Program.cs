@@ -9,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// registers DbContext with the dependency injection system and configures it to use SQLite database file named books.db
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=books.db"));
+// registers DbContext with the dependency injection system and configures it to use SQLite database file named lms.db
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=lms.db"));
 
 // Register JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
