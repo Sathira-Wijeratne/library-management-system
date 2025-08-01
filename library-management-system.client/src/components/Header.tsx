@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography, Button, Box, useTheme, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import AuthService from '../utils/authService';
+import AuthService from '../utils/AuthService';
 
 export default function Header(){
     const navigate = useNavigate();

@@ -5,7 +5,7 @@ import EditBookForm from '../components/EditBookForm';
 import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../utils/authService';
+import AuthService from '../utils/AuthService';
 
 export default function Home() {
     // states
